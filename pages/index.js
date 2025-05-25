@@ -22,3 +22,13 @@ export default function Home() {
     </div>
   );
 }
+
+// Adicionar redirecionamento do lado do servidor
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: '/dashboard',
+      permanent: false,
+    },
+  };
+}
