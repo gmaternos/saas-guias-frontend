@@ -220,6 +220,7 @@ export const AuthProvider = ({ children }) => {
 };
 
 // Hook personalizado para usar o contexto de autenticação
+// Hook personalizado para usar o contexto de autenticação
 export const useAuth = () => {
   // Retornar um objeto vazio se estiver no servidor
   if (isServer) {
@@ -237,6 +238,24 @@ export const useAuth = () => {
       updateProfile: () => Promise.resolve(false)
     };
   }
+  
+  const context = useContext(AuthContext);
+  
+  // Garantir que sempre retorne um objeto válido, mesmo se o contexto for undefined
+  return context || {
+    currentUser: null,
+    userProfile: null,
+    loading: false,
+    authError: null,
+    login: () => Promise.resolve(false),
+    register: () => Promise.resolve(false),
+    loginWithGoogle: () => Promise.resolve(false),
+    logout: () => Promise.resolve(false),
+    resetPassword: () => Promise.resolve(false),
+    completeProfile: () => Promise.resolve(false),
+    updateProfile: () => Promise.resolve(false)
+  };
+};
   
   return useContext(AuthContext);
 };
