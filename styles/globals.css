@@ -1,0 +1,1063 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary: #9C6ADE;
+  --primary-dark: #7E55B3;
+  --primary-light: #B794F4;
+  --secondary: #E683BD;
+  --secondary-dark: #D56BA8;
+  --secondary-light: #F8BBD8;
+  --accent: #4FD1C5;
+  --accent-dark: #38B2AC;
+  --accent-light: #81E6D9;
+  --success: #48BB78;
+  --error: #F56565;
+  --warning: #ED8936;
+  --info: #4299E1;
+  --background: #F7FAFC;
+  --text: #2D3748;
+  --text-light: #718096;
+  --border: #E2E8F0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  color: var(--text);
+  background-color: var(--background);
+}
+
+/* Animações personalizadas */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Classes de utilidade personalizadas */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out;
+}
+
+.animate-pulse-slow {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Estilos para componentes específicos */
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para formulários */
+.form-input {
+  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-1;
+}
+
+.btn-primary {
+  @apply px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors;
+}
+
+.btn-secondary {
+  @apply px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition-colors;
+}
+
+/* Estilos para o dashboard */
+.dashboard-card {
+  @apply bg-white rounded-lg shadow-sm p-6 transition-all duration-300;
+}
+
+.dashboard-card:hover {
+  @apply shadow-md;
+}
+
+.dashboard-stat {
+  @apply text-2xl font-bold;
+}
+
+/* Estilos para navegação */
+.nav-link {
+  @apply text-gray-700 hover:text-purple-600 px-3 py-2 text-sm font-medium;
+}
+
+.nav-link-active {
+  @apply text-purple-600 font-medium;
+}
+
+/* Estilos para badges */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+}
+
+.badge-primary {
+  @apply bg-purple-100 text-purple-800;
+}
+
+.badge-secondary {
+  @apply bg-pink-100 text-pink-800;
+}
+
+.badge-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-error {
+  @apply bg-red-100 text-red-800;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-800;
+}
+
+/* Estilos para tooltips */
+.tooltip {
+  @apply relative inline-block;
+}
+
+.tooltip .tooltip-text {
+  @apply invisible absolute z-10 p-2 text-xs text-white bg-gray-900 rounded-md opacity-0 transition-opacity duration-300;
+  width: 120px;
+  bottom: 125%;
+  left: 50%;
+  margin-left: -60px;
+  text-align: center;
+}
+
+.tooltip:hover .tooltip-text {
+  @apply visible opacity-100;
+}
+
+/* Estilos para alertas */
+.alert {
+  @apply p-4 mb-4 rounded-md;
+}
+
+.alert-success {
+  @apply bg-green-100 text-green-800;
+}
+
+.alert-error {
+  @apply bg-red-100 text-red-800;
+}
+
+.alert-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.alert-info {
+  @apply bg-blue-100 text-blue-800;
+}
+
+/* Estilos para tabs */
+.tab-container {
+  @apply border-b border-gray-200;
+}
+
+.tab {
+  @apply py-4 px-6 text-center font-medium border-b-2 border-transparent;
+}
+
+.tab-active {
+  @apply text-purple-600 border-purple-600;
+}
+
+.tab-content {
+  @apply p-6;
+}
+
+/* Estilos para paginação */
+.pagination {
+  @apply flex justify-center mt-8;
+}
+
+.pagination-item {
+  @apply mx-1 px-3 py-2 text-sm rounded-md;
+}
+
+.pagination-active {
+  @apply bg-purple-600 text-white;
+}
+
+.pagination-disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Estilos para modais */
+.modal-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+}
+
+.modal-content {
+  @apply bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4;
+}
+
+.modal-header {
+  @apply text-lg font-bold mb-4;
+}
+
+.modal-footer {
+  @apply flex justify-end mt-6 space-x-2;
+}
+
+/* Estilos para skeletons (loading) */
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+/* Estilos para calendário */
+.calendar-day {
+  @apply w-10 h-10 flex items-center justify-center rounded-full;
+}
+
+.calendar-day-current {
+  @apply bg-purple-600 text-white;
+}
+
+.calendar-day-event {
+  @apply border-2 border-purple-600;
+}
+
+/* Estilos para gráficos */
+.chart-container {
+  @apply bg-white p-4 rounded-lg shadow-sm;
+}
+
+.chart-legend {
+  @apply flex flex-wrap gap-4 mt-4;
+}
+
+.chart-legend-item {
+  @apply flex items-center text-sm;
+}
+
+.chart-legend-color {
+  @apply w-3 h-3 rounded-full mr-2;
+}
+
+/* Estilos para timeline */
+.timeline {
+  @apply relative border-l-2 border-gray-200 ml-4;
+}
+
+.timeline-item {
+  @apply relative pl-8 pb-8;
+}
+
+.timeline-item:before {
+  content: '';
+  @apply absolute w-4 h-4 bg-white border-2 border-purple-600 rounded-full -left-[9px];
+}
+
+.timeline-item-active:before {
+  @apply bg-purple-600;
+}
+
+/* Estilos para depoimentos */
+.testimonial {
+  @apply bg-white p-6 rounded-lg shadow-sm border-l-4 border-purple-600 italic;
+}
+
+.testimonial-author {
+  @apply mt-4 font-medium not-italic;
+}
+
+/* Estilos para cards de especialistas */
+.expert-card {
+  @apply bg-white rounded-lg shadow-sm overflow-hidden;
+}
+
+.expert-info {
+  @apply p-4;
+}
+
+.expert-name {
+  @apply font-bold text-lg;
+}
+
+.expert-role {
+  @apply text-sm text-gray-600;
+}
+
+/* Estilos para notificações */
+.notification {
+  @apply fixed top-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm w-full z-50 animate-slide-up;
+}
+
+.notification-success {
+  @apply border-l-4 border-green-500;
+}
+
+.notification-error {
+  @apply border-l-4 border-red-500;
+}
+
+.notification-warning {
+  @apply border-l-4 border-yellow-500;
+}
+
+.notification-info {
+  @apply border-l-4 border-blue-500;
+}
+
+/* Estilos para progresso */
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2.5 overflow-hidden;
+}
+
+.progress-bar-fill {
+  @apply h-full rounded-full;
+}
+
+.progress-bar-primary {
+  @apply bg-purple-600;
+}
+
+.progress-bar-success {
+  @apply bg-green-500;
+}
+
+.progress-bar-warning {
+  @apply bg-yellow-500;
+}
+
+.progress-bar-error {
+  @apply bg-red-500;
+}
+
+/* Estilos para avatares */
+.avatar {
+  @apply rounded-full overflow-hidden flex-shrink-0;
+}
+
+.avatar-group {
+  @apply flex -space-x-2;
+}
+
+.avatar-group .avatar {
+  @apply border-2 border-white;
+}
+
+/* Estilos para tags */
+.tag {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800;
+}
+
+.tag-removable {
+  @apply pr-1;
+}
+
+.tag-remove {
+  @apply ml-1 h-4 w-4 rounded-full inline-flex items-center justify-center text-gray-500 hover:bg-gray-200 hover:text-gray-700;
+}
+
+/* Estilos para dropdown */
+.dropdown {
+  @apply relative inline-block;
+}
+
+.dropdown-content {
+  @apply absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10;
+}
+
+.dropdown-item {
+  @apply block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100;
+}
+
+/* Estilos para steps */
+.steps {
+  @apply flex items-center;
+}
+
+.step {
+  @apply flex items-center;
+}
+
+.step-circle {
+  @apply w-8 h-8 rounded-full flex items-center justify-center border-2 border-gray-300 text-gray-500;
+}
+
+.step-active .step-circle {
+  @apply border-purple-600 bg-purple-600 text-white;
+}
+
+.step-completed .step-circle {
+  @apply border-purple-600 bg-purple-600 text-white;
+}
+
+.step-line {
+  @apply w-16 h-0.5 bg-gray-300;
+}
+
+.step-active .step-line, .step-completed .step-line {
+  @apply bg-purple-600;
+}
+
+.step-text {
+  @apply mt-2 text-xs text-gray-500;
+}
+
+.step-active .step-text, .step-completed .step-text {
+  @apply text-purple-600 font-medium;
+}
+
+/* Estilos para toggle */
+.toggle {
+  @apply relative inline-flex items-center cursor-pointer;
+}
+
+.toggle-input {
+  @apply sr-only;
+}
+
+.toggle-slider {
+  @apply w-11 h-6 bg-gray-200 rounded-full transition-colors;
+}
+
+.toggle-input:checked + .toggle-slider {
+  @apply bg-purple-600;
+}
+
+.toggle-slider:before {
+  content: '';
+  @apply absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  @apply transform translate-x-5;
+}
+
+/* Estilos para rating */
+.rating {
+  @apply flex items-center;
+}
+
+.rating-star {
+  @apply text-gray-300;
+}
+
+.rating-star-filled {
+  @apply text-yellow-400;
+}
+
+/* Estilos para comentários */
+.comment {
+  @apply p-4 border-b border-gray-200;
+}
+
+.comment-header {
+  @apply flex items-center mb-2;
+}
+
+.comment-author {
+  @apply font-medium;
+}
+
+.comment-date {
+  @apply text-xs text-gray-500 ml-2;
+}
+
+.comment-body {
+  @apply text-gray-700;
+}
+
+.comment-actions {
+  @apply mt-2 flex items-center space-x-4 text-sm text-gray-500;
+}
+
+/* Estilos para artigos */
+.article {
+  @apply max-w-3xl mx-auto;
+}
+
+.article-header {
+  @apply mb-8;
+}
+
+.article-title {
+  @apply text-3xl font-bold mb-2;
+}
+
+.article-meta {
+  @apply text-sm text-gray-500;
+}
+
+.article-content {
+  @apply prose prose-purple max-w-none;
+}
+
+.article-content h2 {
+  @apply text-2xl font-bold mt-8 mb-4;
+}
+
+.article-content h3 {
+  @apply text-xl font-bold mt-6 mb-3;
+}
+
+.article-content p {
+  @apply mb-4;
+}
+
+.article-content ul, .article-content ol {
+  @apply mb-4 ml-6;
+}
+
+.article-content li {
+  @apply mb-2;
+}
+
+.article-content img {
+  @apply rounded-lg my-6;
+}
+
+.article-content blockquote {
+  @apply border-l-4 border-purple-300 pl-4 italic my-6;
+}
+
+/* Estilos para ferramentas */
+.tool-card {
+  @apply bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-300;
+}
+
+.tool-card:hover {
+  @apply shadow-md;
+}
+
+.tool-header {
+  @apply p-4 border-b border-gray-100;
+}
+
+.tool-title {
+  @apply text-lg font-bold;
+}
+
+.tool-description {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.tool-body {
+  @apply p-4;
+}
+
+.tool-footer {
+  @apply p-4 bg-gray-50 flex justify-between items-center;
+}
+
+/* Estilos para widgets */
+.widget {
+  @apply bg-white rounded-lg shadow-sm p-4;
+}
+
+.widget-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.widget-title {
+  @apply font-bold;
+}
+
+.widget-body {
+  @apply mb-4;
+}
+
+.widget-footer {
+  @apply text-sm text-gray-500;
+}
+
+/* Estilos para onboarding */
+.onboarding-step {
+  @apply max-w-md mx-auto text-center p-6;
+}
+
+.onboarding-icon {
+  @apply mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full bg-purple-100 text-purple-600;
+}
+
+.onboarding-title {
+  @apply text-xl font-bold mb-2;
+}
+
+.onboarding-description {
+  @apply text-gray-600 mb-6;
+}
+
+.onboarding-actions {
+  @apply flex justify-center space-x-4;
+}
+
+/* Estilos para perfil */
+.profile-header {
+  @apply bg-white rounded-lg shadow-sm p-6 mb-6;
+}
+
+.profile-avatar {
+  @apply w-24 h-24 rounded-full mx-auto mb-4;
+}
+
+.profile-name {
+  @apply text-xl font-bold text-center;
+}
+
+.profile-bio {
+  @apply text-gray-600 text-center mt-2;
+}
+
+.profile-stats {
+  @apply flex justify-center mt-4 space-x-6;
+}
+
+.profile-stat {
+  @apply text-center;
+}
+
+.profile-stat-value {
+  @apply text-xl font-bold;
+}
+
+.profile-stat-label {
+  @apply text-xs text-gray-500;
+}
+
+/* Estilos para configurações */
+.settings-section {
+  @apply bg-white rounded-lg shadow-sm p-6 mb-6;
+}
+
+.settings-title {
+  @apply text-lg font-bold mb-4;
+}
+
+.settings-form {
+  @apply space-y-4;
+}
+
+.settings-actions {
+  @apply flex justify-end mt-6 space-x-4;
+}
+
+/* Estilos para notificações */
+.notifications-list {
+  @apply divide-y divide-gray-200;
+}
+
+.notification-item {
+  @apply p-4 hover:bg-gray-50;
+}
+
+.notification-unread {
+  @apply bg-purple-50;
+}
+
+.notification-icon {
+  @apply mr-4 h-10 w-10 rounded-full flex items-center justify-center;
+}
+
+.notification-content {
+  @apply flex-grow;
+}
+
+.notification-title {
+  @apply font-medium;
+}
+
+.notification-message {
+  @apply text-sm text-gray-600;
+}
+
+.notification-time {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+/* Estilos para mensagens */
+.message {
+  @apply mb-4 max-w-xs;
+}
+
+.message-sent {
+  @apply ml-auto;
+}
+
+.message-received {
+  @apply mr-auto;
+}
+
+.message-bubble {
+  @apply p-3 rounded-lg;
+}
+
+.message-sent .message-bubble {
+  @apply bg-purple-600 text-white rounded-br-none;
+}
+
+.message-received .message-bubble {
+  @apply bg-gray-200 text-gray-800 rounded-bl-none;
+}
+
+.message-time {
+  @apply text-xs text-gray-500 mt-1;
+}
+
+.message-sent .message-time {
+  @apply text-right;
+}
+
+/* Estilos para pesquisa */
+.search-container {
+  @apply relative;
+}
+
+.search-input {
+  @apply w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent;
+}
+
+.search-icon {
+  @apply absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400;
+}
+
+.search-results {
+  @apply absolute top-full left-0 right-0 bg-white rounded-md shadow-lg mt-1 z-10 max-h-96 overflow-y-auto;
+}
+
+.search-result-item {
+  @apply p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0;
+}
+
+.search-result-title {
+  @apply font-medium;
+}
+
+.search-result-description {
+  @apply text-sm text-gray-600;
+}
+
+.search-no-results {
+  @apply p-4 text-center text-gray-500;
+}
+
+/* Estilos para filtros */
+.filter-container {
+  @apply bg-white rounded-lg shadow-sm p-4 mb-6;
+}
+
+.filter-title {
+  @apply font-medium mb-2;
+}
+
+.filter-options {
+  @apply space-y-2;
+}
+
+.filter-option {
+  @apply flex items-center;
+}
+
+.filter-checkbox {
+  @apply mr-2 h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded;
+}
+
+.filter-label {
+  @apply text-sm text-gray-700;
+}
+
+.filter-count {
+  @apply ml-auto text-xs text-gray-500;
+}
+
+.filter-actions {
+  @apply flex justify-between mt-4 pt-4 border-t border-gray-200;
+}
+
+/* Estilos para carrossel */
+.carousel {
+  @apply relative;
+}
+
+.carousel-container {
+  @apply overflow-hidden;
+}
+
+.carousel-track {
+  @apply flex transition-transform duration-300;
+}
+
+.carousel-item {
+  @apply flex-shrink-0;
+}
+
+.carousel-arrow {
+  @apply absolute top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white shadow-md flex items-center justify-center text-gray-800 z-10;
+}
+
+.carousel-arrow-prev {
+  @apply left-2;
+}
+
+.carousel-arrow-next {
+  @apply right-2;
+}
+
+.carousel-dots {
+  @apply flex justify-center mt-4 space-x-2;
+}
+
+.carousel-dot {
+  @apply w-2 h-2 rounded-full bg-gray-300;
+}
+
+.carousel-dot-active {
+  @apply bg-purple-600;
+}
+
+/* Estilos para FAQ */
+.faq-item {
+  @apply border-b border-gray-200 py-4;
+}
+
+.faq-question {
+  @apply flex justify-between items-center cursor-pointer;
+}
+
+.faq-question-text {
+  @apply font-medium;
+}
+
+.faq-answer {
+  @apply mt-2 text-gray-600;
+}
+
+/* Estilos para estatísticas */
+.stat-card {
+  @apply bg-white rounded-lg shadow-sm p-6;
+}
+
+.stat-title {
+  @apply text-sm font-medium text-gray-500 mb-1;
+}
+
+.stat-value {
+  @apply text-3xl font-bold;
+}
+
+.stat-description {
+  @apply text-sm text-gray-600 mt-2;
+}
+
+.stat-trend {
+  @apply flex items-center mt-1 text-sm;
+}
+
+.stat-trend-up {
+  @apply text-green-600;
+}
+
+.stat-trend-down {
+  @apply text-red-600;
+}
+
+/* Estilos para tabelas */
+.table-container {
+  @apply overflow-x-auto;
+}
+
+.table {
+  @apply min-w-full divide-y divide-gray-200;
+}
+
+.table-header {
+  @apply bg-gray-50;
+}
+
+.table-header-cell {
+  @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+
+.table-body {
+  @apply bg-white divide-y divide-gray-200;
+}
+
+.table-row {
+  @apply hover:bg-gray-50;
+}
+
+.table-cell {
+  @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500;
+}
+
+.table-footer {
+  @apply bg-white px-6 py-3 border-t border-gray-200;
+}
+
+/* Estilos para calendário */
+.calendar {
+  @apply bg-white rounded-lg shadow-sm overflow-hidden;
+}
+
+.calendar-header {
+  @apply bg-gray-50 px-6 py-4 flex items-center justify-between;
+}
+
+.calendar-title {
+  @apply font-medium;
+}
+
+.calendar-grid {
+  @apply grid grid-cols-7 gap-px bg-gray-200;
+}
+
+.calendar-day-name {
+  @apply bg-gray-50 py-2 text-center text-xs font-medium text-gray-500;
+}
+
+.calendar-day {
+  @apply bg-white py-2 px-3 h-24;
+}
+
+.calendar-day-number {
+  @apply text-sm font-medium;
+}
+
+.calendar-day-events {
+  @apply mt-1 overflow-y-auto max-h-16;
+}
+
+.calendar-event {
+  @apply px-2 py-1 rounded-sm text-xs mb-1 truncate;
+}
+
+/* Estilos para gráficos */
+.chart {
+  @apply bg-white rounded-lg shadow-sm p-4;
+}
+
+.chart-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.chart-title {
+  @apply font-medium;
+}
+
+.chart-legend {
+  @apply flex flex-wrap gap-4;
+}
+
+.chart-legend-item {
+  @apply flex items-center text-xs;
+}
+
+.chart-legend-color {
+  @apply w-3 h-3 rounded-full mr-1;
+}
+
+/* Estilos para impressão */
+@media print {
+  body {
+    @apply bg-white text-black;
+  }
+  
+  .no-print {
+    @apply hidden;
+  }
+  
+  .print-only {
+    @apply block;
+  }
+  
+  a {
+    @apply text-black;
+  }
+}
+
+/* Acessibilidade */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+}
+
+.focus-visible:focus {
+  @apply outline-none ring-2 ring-purple-500 ring-offset-2;
+}
+
+/* Estilos para modo escuro (opcional) */
+@media (prefers-color-scheme: dark) {
+  .dark-mode {
+    --background: #1A202C;
+    --text: #E2E8F0;
+    --text-light: #A0AEC0;
+    --border: #2D3748;
+  }
+  
+  .dark-mode body {
+    @apply bg-gray-900 text-gray-100;
+  }
+  
+  .dark-mode .bg-white {
+    @apply bg-gray-800;
+  }
+  
+  .dark-mode .text-gray-700 {
+    @apply text-gray-300;
+  }
+  
+  .dark-mode .text-gray-600 {
+    @apply text-gray-400;
+  }
+  
+  .dark-mode .text-gray-500 {
+    @apply text-gray-500;
+  }
+  
+  .dark-mode .border-gray-200 {
+    @apply border-gray-700;
+  }
+  
+  .dark-mode .bg-gray-50 {
+    @apply bg-gray-900;
+  }
+  
+  .dark-mode .bg-gray-100 {
+    @apply bg-gray-800;
+  }
+  
+  .dark-mode .shadow-sm {
+    @apply shadow-none;
+  }
+}
