@@ -10,7 +10,8 @@ import Footer from '@/components/Footer';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function RastreadorDesenvolvimentoComponent() {
-  const { userProfile, loading: authLoading } = useAuth();
+  // Adicionando valores padrão e verificação para useAuth
+  const { userProfile = null, loading: authLoading = true } = useAuth() || {};
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [milestones, setMilestones] = useState([]);
@@ -28,6 +29,7 @@ export default function RastreadorDesenvolvimentoComponent() {
     if (!isClient) return;
     
     const fetchData = async () => {
+      // Verificação adicional para evitar erros
       if (authLoading || !userProfile) return;
       
       setLoading(true);
