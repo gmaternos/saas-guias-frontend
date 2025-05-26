@@ -1,203 +1,218 @@
 import { createContext, useState, useEffect, useContext } from 'react';
-import { useRouter } from 'next/router';
-import api from '../services/api';
+import api from '@/services/api';
 
-// Verificar se estamos no servidor ou no cliente
+// Verificar se estamos no servidor
 const isServer = typeof window === 'undefined';
 
-// Criar contexto de autenticação
+// Criar o contexto de autenticação
 const AuthContext = createContext();
 
-// Provider de autenticação
-export const AuthProvider = ({ children }) => {
+// Provedor do contexto de autenticação
+export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [userProfile, setUserProfile] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
-  const router = useRouter();
 
-  // Efeito para monitorar mudanças no estado de autenticação
+  // Verificar autenticação ao carregar
   useEffect(() => {
     // Não executar no servidor
-    if (isServer) {
-      setLoading(false);
-      return;
-    }
+    if (isServer) return;
 
-    const setupAuth = async () => {
+    const checkAuth = async () => {
+      setLoading(true);
       try {
-        // Importar Firebase dinamicamente apenas no cliente
-        const { getAuth, onAuthStateChanged } = await import('firebase/auth');
-        const auth = getAuth();
+        // Verificar se há token no localStorage
+        const token = localStorage.getItem('token');
         
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
-          setCurrentUser(user);
-          setLoading(true);
-          
-          if (user) {
-            try {
-              // Buscar perfil do usuário na API
-              const response = await api.get('/auth/profile');
-              setUserProfile(response.data.data.user);
-            } catch (error) {
-              console.error('Erro ao buscar perfil do usuário:', error);
-              
-              // Se o perfil não existir, redirecionar para completar cadastro
-              if (error.response && error.response.status === 404) {
-                router.push('/auth/complete-profile');
-              }
-            }
-          } else {
-            setUserProfile(null);
-          }
-          
+        if (!token) {
+          setCurrentUser(null);
+          setUserProfile(null);
           setLoading(false);
-        });
+          return;
+        }
         
-        return () => unsubscribe();
+        // Configurar token no cabeçalho das requisições
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Buscar perfil do usuário
+        const response = await api.get('/user/profile');
+        
+        if (response.data.success) {
+          setCurrentUser({ token });
+          setUserProfile(response.data.data.user);
+        } else {
+          // Token inválido ou expirado
+          localStorage.removeItem('token');
+          setCurrentUser(null);
+          setUserProfile(null);
+        }
       } catch (error) {
-        console.error('Erro ao inicializar Firebase Auth:', error);
+        console.error('Erro ao verificar autenticação:', error);
+        localStorage.removeItem('token');
+        setCurrentUser(null);
+        setUserProfile(null);
+      } finally {
         setLoading(false);
       }
     };
     
-    setupAuth();
-  }, [router]);
+    checkAuth();
+  }, []);
 
-  // Função para login com email e senha
+  // Função de login
   const login = async (email, password) => {
-    if (isServer) return false;
-    
     setAuthError(null);
     try {
-      const { getAuth, signInWithEmailAndPassword } = await import('firebase/auth');
-      const auth = getAuth();
-      await signInWithEmailAndPassword(auth, email, password);
-      return true;
+      const response = await api.post('/auth/login', { email, password });
+      
+      if (response.data.success) {
+        const { token } = response.data.data;
+        localStorage.setItem('token', token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Buscar perfil após login
+        const profileResponse = await api.get('/user/profile');
+        
+        if (profileResponse.data.success) {
+          setCurrentUser({ token });
+          setUserProfile(profileResponse.data.data.user);
+          return true;
+        }
+      } else {
+        setAuthError(response.data.message || 'Erro ao fazer login');
+      }
     } catch (error) {
-      console.error('Erro no login:', error);
-      setAuthError(getAuthErrorMessage(error.code));
-      return false;
+      console.error('Erro ao fazer login:', error);
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
     }
+    return false;
   };
 
-  // Função para registro com email e senha
-  const register = async (email, password) => {
-    if (isServer) return false;
-    
+  // Função de registro
+  const register = async (userData) => {
     setAuthError(null);
-    try {
-      const { getAuth, createUserWithEmailAndPassword } = await import('firebase/auth');
-      const auth = getAuth();
-      await createUserWithEmailAndPassword(auth, email, password);
-      return true;
-    } catch (error) {
-      console.error('Erro no registro:', error);
-      setAuthError(getAuthErrorMessage(error.code));
-      return false;
-    }
-  };
-
-  // Função para login com Google
-  const loginWithGoogle = async () => {
-    if (isServer) return false;
-    
-    setAuthError(null);
-    try {
-      const { getAuth, GoogleAuthProvider, signInWithPopup } = await import('firebase/auth');
-      const auth = getAuth();
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      return true;
-    } catch (error) {
-      console.error('Erro no login com Google:', error);
-      setAuthError(getAuthErrorMessage(error.code));
-      return false;
-    }
-  };
-
-  // Função para logout
-  const logout = async () => {
-    if (isServer) return false;
-    
-    try {
-      const { getAuth, signOut } = await import('firebase/auth');
-      const auth = getAuth();
-      await signOut(auth);
-      router.push('/');
-      return true;
-    } catch (error) {
-      console.error('Erro no logout:', error);
-      return false;
-    }
-  };
-
-  // Função para recuperação de senha
-  const resetPassword = async (email) => {
-    if (isServer) return false;
-    
-    setAuthError(null);
-    try {
-      const { getAuth, sendPasswordResetEmail } = await import('firebase/auth');
-      const auth = getAuth();
-      await sendPasswordResetEmail(auth, email);
-      return true;
-    } catch (error) {
-      console.error('Erro na recuperação de senha:', error);
-      setAuthError(getAuthErrorMessage(error.code));
-      return false;
-    }
-  };
-
-  // Função para completar perfil do usuário
-  const completeProfile = async (userData) => {
-    if (isServer) return false;
-    
     try {
       const response = await api.post('/auth/register', userData);
-      setUserProfile(response.data.data.user);
-      return true;
+      
+      if (response.data.success) {
+        const { token } = response.data.data;
+        localStorage.setItem('token', token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Buscar perfil após registro
+        const profileResponse = await api.get('/user/profile');
+        
+        if (profileResponse.data.success) {
+          setCurrentUser({ token });
+          setUserProfile(profileResponse.data.data.user);
+          return true;
+        }
+      } else {
+        setAuthError(response.data.message || 'Erro ao registrar');
+      }
+    } catch (error) {
+      console.error('Erro ao registrar:', error);
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
+    }
+    return false;
+  };
+
+  // Função de login com Google
+  const loginWithGoogle = async (googleToken) => {
+    setAuthError(null);
+    try {
+      const response = await api.post('/auth/google', { token: googleToken });
+      
+      if (response.data.success) {
+        const { token } = response.data.data;
+        localStorage.setItem('token', token);
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        // Buscar perfil após login com Google
+        const profileResponse = await api.get('/user/profile');
+        
+        if (profileResponse.data.success) {
+          setCurrentUser({ token });
+          setUserProfile(profileResponse.data.data.user);
+          return true;
+        }
+      } else {
+        setAuthError(response.data.message || 'Erro ao fazer login com Google');
+      }
+    } catch (error) {
+      console.error('Erro ao fazer login com Google:', error);
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
+    }
+    return false;
+  };
+
+  // Função de logout
+  const logout = () => {
+    localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
+    setCurrentUser(null);
+    setUserProfile(null);
+    return true;
+  };
+
+  // Função para redefinir senha
+  const resetPassword = async (email) => {
+    setAuthError(null);
+    try {
+      const response = await api.post('/auth/reset-password', { email });
+      
+      if (response.data.success) {
+        return true;
+      } else {
+        setAuthError(response.data.message || 'Erro ao solicitar redefinição de senha');
+      }
+    } catch (error) {
+      console.error('Erro ao solicitar redefinição de senha:', error);
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
+    }
+    return false;
+  };
+
+  // Função para completar perfil
+  const completeProfile = async (profileData) => {
+    setAuthError(null);
+    try {
+      const response = await api.post('/user/complete-profile', profileData);
+      
+      if (response.data.success) {
+        setUserProfile(response.data.data.user);
+        return true;
+      } else {
+        setAuthError(response.data.message || 'Erro ao completar perfil');
+      }
     } catch (error) {
       console.error('Erro ao completar perfil:', error);
-      return false;
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
     }
+    return false;
   };
 
-  // Função para atualizar perfil do usuário
-  const updateProfile = async (userData) => {
-    if (isServer) return false;
-    
+  // Função para atualizar perfil
+  const updateProfile = async (profileData) => {
+    setAuthError(null);
     try {
-      const response = await api.put('/auth/profile', userData);
-      setUserProfile(response.data.data.user);
-      return true;
+      const response = await api.put('/user/profile', profileData);
+      
+      if (response.data.success) {
+        setUserProfile(response.data.data.user);
+        return true;
+      } else {
+        setAuthError(response.data.message || 'Erro ao atualizar perfil');
+      }
     } catch (error) {
       console.error('Erro ao atualizar perfil:', error);
-      return false;
+      setAuthError(error.response?.data?.message || 'Erro ao conectar ao servidor');
     }
+    return false;
   };
 
-  // Função para obter mensagem de erro amigável
-  const getAuthErrorMessage = (errorCode) => {
-    switch (errorCode) {
-      case 'auth/user-not-found':
-        return 'Usuário não encontrado. Verifique seu email.';
-      case 'auth/wrong-password':
-        return 'Senha incorreta. Tente novamente.';
-      case 'auth/email-already-in-use':
-        return 'Este email já está sendo usado por outra conta.';
-      case 'auth/weak-password':
-        return 'A senha é muito fraca. Use pelo menos 6 caracteres.';
-      case 'auth/invalid-email':
-        return 'Email inválido. Verifique o formato.';
-      case 'auth/too-many-requests':
-        return 'Muitas tentativas. Tente novamente mais tarde.';
-      default:
-        return 'Ocorreu um erro. Tente novamente.';
-    }
-  };
-
-  // Valores do contexto
+  // Valor do contexto
   const value = {
     currentUser,
     userProfile,
@@ -217,9 +232,8 @@ export const AuthProvider = ({ children }) => {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-// Hook personalizado para usar o contexto de autenticação
 // Hook personalizado para usar o contexto de autenticação
 export const useAuth = () => {
   // Retornar um objeto vazio se estiver no servidor
@@ -255,7 +269,4 @@ export const useAuth = () => {
     completeProfile: () => Promise.resolve(false),
     updateProfile: () => Promise.resolve(false)
   };
-};
-  
-  return useContext(AuthContext);
 };
